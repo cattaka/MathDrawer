@@ -41,6 +41,7 @@
  */
 package net.cattaka.mathdrawer.gui;
 
+import java.awt.Desktop;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -119,6 +120,13 @@ public class MathDrawerPanel extends JPanel implements MdGuiInterface {
 				dd.setLocationRelativeTo(MathDrawerPanel.this);
 				dd.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dd.setVisible(true);
+			} else if (e.getActionCommand().equals("javadocOfScript")) {
+				try {
+					File file = new File("docs/apidocs/index.html");
+					Desktop.getDesktop().browse(file.toURI());
+				} catch (IOException ex) {
+					ExceptionHandler.error(ex);
+				}
 			} else if (e.getActionCommand().equals("config")) {
 				MdConfigEditorDialog dialog = new MdConfigEditorDialog(MdGuiUtil.getParentFrame(MathDrawerPanel.this));
 				MdConfig mdConfig = MathDrawerPanel.this.getMdConfig();
@@ -263,24 +271,36 @@ public class MathDrawerPanel extends JPanel implements MdGuiInterface {
 			ButtonsBundle.applyMenuDifinition(readmeMenu, "menu_readme");
 			readmeMenu.setActionCommand("readme");
 			readmeMenu.addActionListener(al);
-			JMenuItem aboutMenu = new JMenuItem();
-			ButtonsBundle.applyMenuDifinition(aboutMenu, "menu_about");
-			aboutMenu.setActionCommand("about");
-			aboutMenu.addActionListener(al);
-			JMenuItem licenseMenu = new JMenuItem();
-			ButtonsBundle.applyMenuDifinition(licenseMenu, "menu_license");
-			licenseMenu.setActionCommand("license");
-			licenseMenu.addActionListener(al);
+			helpMenu.add(readmeMenu);
+
+			if(Desktop.isDesktopSupported()) {
+				JMenuItem javadocOfScriptMenu = new JMenuItem();
+				ButtonsBundle.applyMenuDifinition(javadocOfScriptMenu, "menu_script_javadoc");
+				javadocOfScriptMenu.setActionCommand("javadocOfScript");
+				javadocOfScriptMenu.addActionListener(al);
+				helpMenu.add(javadocOfScriptMenu);
+			}
+
+			helpMenu.addSeparator();
+
 			JMenuItem showLogList = new JMenuItem();
 			ButtonsBundle.applyMenuDifinition(showLogList, "menu_show_log_list");
 			showLogList.setActionCommand("showLogList");
 			showLogList.addActionListener(al);
-			
-			helpMenu.add(readmeMenu);
-			helpMenu.add(licenseMenu);
-			helpMenu.addSeparator();
 			helpMenu.add(showLogList);
+
 			helpMenu.addSeparator();
+
+			JMenuItem licenseMenu = new JMenuItem();
+			ButtonsBundle.applyMenuDifinition(licenseMenu, "menu_license");
+			licenseMenu.setActionCommand("license");
+			licenseMenu.addActionListener(al);
+			helpMenu.add(licenseMenu);
+
+			JMenuItem aboutMenu = new JMenuItem();
+			ButtonsBundle.applyMenuDifinition(aboutMenu, "menu_about");
+			aboutMenu.setActionCommand("about");
+			aboutMenu.addActionListener(al);
 			helpMenu.add(aboutMenu);
 			
 			menuBar.add(helpMenu);
