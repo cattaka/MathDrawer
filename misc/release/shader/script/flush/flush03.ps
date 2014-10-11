@@ -1,0 +1,65 @@
+<%@page name="フラッシュ3" %>
+<%@page description="波を重ね合わせてフラッシュを描きます。" %>
+<%@include file="include/waveUtil.ps"%>
+<%@param name="WaveType" type="Integer" var="waveType" default="2" %>
+<%@param name="Pow" type="Double" var="pow" default="2" %>
+<%@param name="Count" type="Integer" var="count" default="32" %>
+<%@param name="Mod" type="Integer" var="mod" default="32" %>
+<%@param name="RandomSeed" type="Integer" var="randomSeed" default="123456788" %>
+<%@param name="Radius" type="Double" var="radius" default="0.1" %>
+<%@param name="Wave" type="Double" var="wave" default="0.3" %>
+<%
+//int waveType = 1;
+//int count = 1;
+//int mod = 16;
+//int randomSeed = 123456788;
+//double radius = 0.1;
+//double wave = 0.4;
+//
+//if (!isDebug()) {
+//	waveType	= (integerValues[0] != null) ? integerValues[0] : waveType;
+//	count		= (integerValues[1] != null) ? integerValues[1] : count;
+//	mod			= (integerValues[2] != null) ? integerValues[2] : mod;
+//	randomSeed	= (integerValues[3] != null) ? integerValues[3] : randomSeed;
+//	radius		= (doubleValues[0] != null) ? doubleValues[0] : radius;
+//	wave		= (doubleValues[1] != null) ? doubleValues[1] : wave;
+//}
+
+
+Random random = new Random(randomSeed);
+int[] ns = new int[count];
+double[] offset = new double[count];
+for (int i=0;i<ns.length;i++) {
+	ns[i] = random.nextInt() % mod;
+	offset[i] = random.nextDouble() * Math.PI*2;
+}
+
+Vector2d vec = new Vector2d();
+Vector2d center = new Vector2d(0.5,0.5);
+Color4d base = new Color4d();
+posToVector2d(vec, x, y, w, h);
+vec.x -= 0.5;
+vec.y -= 0.5;
+Vector2d pol = new Vector2d();
+toPolar(pol, vec);
+
+double cos = 0;
+for (int i=0;i<ns.length;i++) {
+	double d = Math.abs(waveUtil.calcWave(waveType,pol.y * ns[i] + offset[i]));
+	cos += Math.pow(d, pow);
+}
+cos /= ns.length;
+
+double r = radius + wave * cos;
+
+double alpha = 0;
+if (pol.x <= r) {
+	alpha = 1.0 - (pol.x / r);
+}
+
+c.a = alpha;
+c.b = 1;
+c.c = 1;
+c.d = 1;
+
+%>

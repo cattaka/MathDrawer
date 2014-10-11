@@ -1,0 +1,41 @@
+<%@page name="殻1" %>
+<%@page description="内部が半透明の花模様を描きます。" %>
+<%@include file="include/waveUtil.ps"%>
+<%@param name="WaveType" type="Integer" var="waveType" default="0" %>
+<%@param name="Num" type="Integer" var="n" default="4" %>
+<%@param name="Radius" type="Double" var="radius" default="0.3" %>
+<%@param name="Wave" type="Double" var="wave" default="0.1" %>
+<%@param name="OuterWidth" type="Double" var="outerWidth" default="0.05" %>
+<%@param name="InnerWidth" type="Double" var="innerWidth" default="0.2" %>
+<%@param name="OuterPow" type="Double" var="outerPow" default="1.0" %>
+<%@param name="InnerPow" type="Double" var="innerPow" default="2.0" %>
+<%
+Vector2d vec = new Vector2d();
+Vector2d center = new Vector2d(0.5,0.5);
+Color4d base = new Color4d();
+posToVector2d(vec, x, y, w, h);
+
+vec.x -= 0.5;
+vec.y -= 0.5;
+Vector2d pol = new Vector2d();
+toPolar(pol, vec);
+
+double r = radius + wave * Math.abs(waveUtil.calcWave(waveType,pol.y * n));
+
+double alpha = 0;
+if ((r - innerWidth) <= pol.x && pol.x <= r) {
+	double a = (pol.x - (r - innerWidth)) / innerWidth;
+	alpha = Math.pow(a, innerPow);
+} else if (r <= pol.x && pol.x <= r + outerWidth) {
+	double a = ((r + outerWidth) - pol.x) / outerWidth;
+	alpha = Math.pow(a, outerPow);
+}
+
+Color4d baseColor = new Color4d();
+baseImage.getColor4d(baseColor,x,y);
+c.a = alpha;
+c.b = baseColor.b;
+c.c = baseColor.c;
+c.d = baseColor.d;
+
+%>

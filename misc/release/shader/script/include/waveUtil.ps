@@ -1,0 +1,90 @@
+<%
+class WaveUtil {
+	public double calcWave(int waveType, double x) {
+		double result;
+		switch(waveType) {
+			case 0:
+				result = cos(x);
+				break;
+			case 1:
+				result = linerWave(x);
+				break;
+			case 2:
+				result = negWave(x);
+				break;
+			case 3:
+				result = sin(x);
+				break;
+			case 4:
+				result = linerWave(x - Math.PI/2.0);
+				break;
+			case 5:
+				result = negWave(x - Math.PI/2.0);
+				break;
+			default:
+				result = 0;
+				break;
+		}
+		return result;
+	}
+
+	public double cos(double x) {
+		return Math.cos(x);
+	}
+	public double sin(double x) {
+		return Math.sin(x);
+	}
+
+	public double linerWave(double x) {
+		double div = (Math.PI/2);
+
+		double rad = x % (Math.PI*2);
+		if (rad < 0) {
+			rad += (Math.PI*2);
+		}
+
+		int n = (int)(rad / div);
+		double result = rad - div * n;
+		result /= Math.PI/2;
+
+		n = n % 4;
+
+		if (n==0) {
+			result = 1.0 - result;
+		} else if (n==1) {
+			result = -result;
+		} else if (n==2) {
+			result = -(1.0 - result);
+		} else if (n==3) {
+		}
+		return result;
+	}
+
+	public double negWave(double x) {
+		double div = (Math.PI/2);
+
+		double rad = x % (Math.PI*2);
+		if (rad < 0) {
+			rad += (Math.PI*2);
+		}
+
+		int n = (int)(rad / div);
+
+		n = n % 4;
+
+		double result = 0;
+		if (n==0) {
+			result = 1.0-Math.sin(rad);
+		} else if (n==1) {
+			result = Math.sin(rad) - 1.0;
+		} else if (n==2) {
+			result = -1.0 - Math.sin(rad);
+		} else if (n==3) {
+			result = Math.sin(rad) + 1.0;
+		}
+		return result;
+	}
+}
+final WaveUtil waveUtil = new WaveUtil();
+
+%>

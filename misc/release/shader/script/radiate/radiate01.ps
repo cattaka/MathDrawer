@@ -1,0 +1,34 @@
+<%@page name="放射1" %>
+<%@page description="放射状に線を描画します。" %>
+<%@include file="include/drawUtil.ps"%>
+<%@param name="AngleOffset" type="Double" var="angleOffset" default="0.0" %>
+<%@param name="WaveType" type="Integer" var="waveType" default="3" %>
+<%@param name="Start Radius" type="Double" var="startRadius" default="0.0" %>
+<%@param name="End Radius" type="Double" var="endRadius" default="0.40" %>
+<%@param name="Width" type="Double" var="width" default="0.01" %>
+<%@param name="dumping" type="Double" var="dumping" default="0.04" %>
+<%@param name="Wave" type="Double" var="wave" default="0.05" %>
+<%@param name="Num" type="Integer" var="n" default="16" %>
+<%@param name="Scale" type="Double" var="scale" default="2.0" %>
+<%
+Vector2d vec = new Vector2d();
+Vector2d center = new Vector2d(0.5,0.5);
+posToVector2d(vec, x, y, w, h);
+
+Vector2d start = new Vector2d();
+Vector2d end = new Vector2d();
+
+double alpha = 0.0;
+for (int i=0;i<n;i++) {
+	double rad = ((angleOffset / 180d) + (double)i / (double)n) * Math.PI * 2;
+	start.x = center.x + startRadius * Math.cos(rad);
+	start.y = center.y + startRadius * Math.sin(rad);
+	end.x = center.x + endRadius * Math.cos(rad);
+	end.y = center.y + endRadius * Math.sin(rad);
+
+	alpha = Math.max(alpha, drawUtil.drawFixedWave(vec, start, end, width, dumping, waveType, wave, scale));
+}
+
+baseImage.getColor4d(c,x,y);
+c.a = alpha;
+%>

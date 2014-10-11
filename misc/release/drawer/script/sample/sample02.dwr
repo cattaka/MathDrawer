@@ -1,0 +1,23 @@
+<%@page description="格子を描画します。"%>
+<%@param name="GapX" type="Integer" var="gapX" default="16"%>
+<%@param name="GapY" type="Integer" var="gapY" default="16"%>
+<%@param name="CountX" type="Integer" var="countX" default="17"%>
+<%@param name="CountY" type="Integer" var="countY" default="17"%>
+<%@param name="WidthX" type="Integer" var="widthX" default="3"%>
+<%@param name="WidthY" type="Integer" var="widthY" default="3"%>
+<%@param type="Color4d" var="color" name="color" default="(1,0,0,0)"%>
+<%
+int offX = (widthX%2 == 0) ? (widthX / 2) : ((widthX-1) / 2);
+int offY = (widthY%2 == 0) ? (widthY / 2) : ((widthY-1) / 2);
+
+g.setColor(color.toColor());
+g.drawImage(baseImage, 0, 0, null);
+for (int i=0;i<countX;i++) {
+	int x = gapX * i;
+	g.fillRect(x - offX, 0, widthX, h);
+}
+for (int j=0;j<countX;j++) {
+	int y = gapY * j;
+	g.fillRect(0, y - offY, w, widthY);
+}
+%>

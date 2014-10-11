@@ -1,0 +1,47 @@
+<%@page name="波2" %>
+<%@page description="波を重ね合わせて花模様を描きます。" %>
+<%@include file="include/waveUtil.ps"%>
+<%@param name="WaveType" type="Integer" var="waveType" default="0" %>
+<%@param name="Size" type="Double" var="size" default="0.50" %>
+<%@param name="Width" type="Double" var="width" default="0.05" %>
+<%@param name="Num" type="Integer" var="n" default="8" %>
+<%@param name="Step" type="Integer" var="step" default="4" %>
+<%
+double wave = (size-width) / (step+1);
+Vector2d vec = new Vector2d();
+Vector2d center = new Vector2d(0.5,0.5);
+Color4d base = new Color4d();
+posToVector2d(vec, x, y, w, h);
+
+vec.x -= 0.5;
+vec.y -= 0.5;
+Vector2d pol = new Vector2d();
+toPolar(pol, vec);
+
+double alpha = 0;
+for (int i=1;i<=step;i++) {
+	double lw = width*(step-i+1);
+	double r;
+	if (i%2 != 0) {
+		r = (wave*i) + wave * Math.abs(waveUtil.calcWave(waveType,pol.y * n));
+	} else {
+		r = (wave*i) + wave * Math.abs(waveUtil.calcWave(waveType,pol.y * n + Math.PI/2));
+	}
+	
+	if (Math.abs(pol.x - r) <= lw) {
+		double a = lw - Math.abs(pol.x - r);
+		a = (a / lw);
+		alpha = Math.max(alpha,a);
+	}
+}
+alpha = alpha + limitDouble(1d-Math.pow(pol.x*4,0.5));
+alpha = limitDouble(alpha);
+
+Color4d baseColor = new Color4d();
+baseImage.getColor4d(baseColor,x,y);
+c.a = alpha;
+c.b = baseColor.b;
+c.c = baseColor.c;
+c.d = baseColor.d;
+
+%>

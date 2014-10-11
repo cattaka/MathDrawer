@@ -1,0 +1,6 @@
+<%@page name="アルファ逆転" %>
+<%@page description="アルファチャンネルを逆転します。" %>
+<%
+baseImage.getColor4d(c,x,y);
+c.a = 1.0 - c.a;
+%>

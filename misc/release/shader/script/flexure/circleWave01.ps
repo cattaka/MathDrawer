@@ -1,0 +1,36 @@
+<%@page name="波紋1" %>
+<%@page description="放射状に縦波を起こします。" %>
+<%@include file="include/waveUtil.ps"%>
+<%@param name="WaveType" type="Integer" var="waveType" default="3" %>
+<%@param name="WaveLength" type="Double" var="waveLength" default="1.0" %>
+<%@param name="Num" type="Double" var="num" default="4.00" %>
+<%@param name="Offset" type="Double" var="offset" default="0.0" %>
+<%@param name="Damping" type="Double" var="damping" default="1.0" %>
+<%@param name="Wave" type="Double" var="wave" default="0.1" %>
+<%
+Vector2d vec = new Vector2d();
+posToVector2d(vec, x, y, w, h);
+Vector2d v2 = new Vector2d();
+v2.x = vec.x - 0.5;
+v2.y = vec.y - 0.5;
+Vector2d pol = new Vector2d();
+toPolar(pol, v2);
+
+double diff;
+double dw = wave * (1.0 - (pol.x*2*damping)) ;
+if (wave > 0 && dw < 0) {
+	dw = 0;
+} else if (wave < 0 && dw > 0) {
+	dw = 0;
+}
+diff = dw * waveUtil.calcWave(waveType, (offset + pol.x/waveLength) * Math.PI * 2 * num);
+
+double ox = vec.x + diff * Math.cos(pol.y);
+double oy = vec.y + diff * Math.sin(pol.y);
+
+ox = cyclicDouble(ox);
+oy = cyclicDouble(oy);
+
+baseImage.getColor4dLiner(c,ox,oy);
+
+%>

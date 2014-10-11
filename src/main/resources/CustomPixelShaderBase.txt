@@ -1,0 +1,21 @@
+/*IMPORT*/
+
+import java.io.*;
+import java.util.*;
+import java.awt.Color;
+import java.awt.image.*;
+import net.cattaka.mathdrawer.entity.*;
+import net.cattaka.mathdrawer.drawer.custom.*;
+
+public class /*CLASS_NAME*/ extends CustomPixelShader {
+	public /*CLASS_NAME*/() {
+		StringBuilder descSb = new StringBuilder();
+		/*DEFINE_PARAMS*/
+		this.setDescription(descSb.toString());
+	}
+	@Override
+	public void shadePixel(Color4d c, int x, int y, int w, int h) {
+		/*EXTRACT_PARAMS*/
+		/*BODY*/
+	}
+}

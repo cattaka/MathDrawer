@@ -1,0 +1,131 @@
+<%@include file="include/waveUtil.ps"%>
+<%
+class DrawUtil {
+	public double drawLine(Vector2d pos, Vector2d p1, Vector2d p2, double width, double dumping) {
+		double d;
+		int block = MdMath.checkOnBlock(p1,p2,pos);
+		if (block == 0) {
+			d = Math.abs(MdMath.calcFromLine(pos, p1, p2));
+		} else {
+			d = Math.min(Vector2d.getDistance(pos,p1),Vector2d.getDistance(pos,p2));
+		}
+
+		if (d < width) {
+			return 1;
+		} else {
+			d = d - width;
+			if (d<dumping) {
+				return (dumping - d) / dumping;
+			} else {
+				return 0d;
+			}
+		}
+	}
+	public double drawFixedWave(Vector2d pos, Vector2d p1, Vector2d p2, double width, double dumping, int waveType, double wave, double scale) {
+		return drawFreeWave(pos, p1, p2, width, dumping, waveType, wave, scale / Vector2d.getDistance(p1,p2));
+	}
+	public double drawFreeWave(Vector2d pos, Vector2d p1, Vector2d p2, double width, double dumping, int waveType, double wave, double scale) {
+		double d;
+
+		// 位相
+		double s;
+		{
+			Vector2d v1 = new Vector2d(p2);
+			Vector2d v2 = new Vector2d(pos);
+			v1.sub(p1);
+			v2.sub(p1);
+			s = Vector2d.getDot(v1,v2) / v1.getLength();
+			s = s * scale * Math.PI*2;
+		}
+
+		int block = MdMath.checkOnBlock(p1,p2,pos);
+		if (block == 0) {
+			d = MdMath.calcFromLine(pos, p1, p2);
+			d = d - wave * waveUtil.calcWave(waveType, s);
+			d = Math.abs(d);
+		} else if (block < 0) {
+			Vector2d p = new Vector2d(p1);
+			Vector2d n = new Vector2d(-(p2.y-p1.y),p2.x-p1.x);
+			n.normalize();
+			p.scaleAdd(wave * waveUtil.calcWave(waveType, s),n);
+			d = Vector2d.getDistance(pos,p);
+		} else {
+			Vector2d p = new Vector2d(p2);
+			Vector2d n = new Vector2d(-(p2.y-p1.y),p2.x-p1.x);
+			n.normalize();
+			p.scaleAdd(wave * waveUtil.calcWave(waveType, s),n);
+			d = Vector2d.getDistance(pos,p);
+		}
+
+		if (d < width) {
+			return 1;
+		} else {
+			d = d - width;
+			if (d<dumping) {
+				return (dumping - d) / dumping;
+			} else {
+				return 0d;
+			}
+		}
+	}
+	public double fillCircle(Vector2d pos, Vector2d p, double radius, double dumping) {
+		double d = Vector2d.getDistance(p,pos);
+		if (d < radius) {
+			return 1;
+		} else {
+			d = d - radius;
+			if (d<dumping) {
+				return (dumping - d) / dumping;
+			} else {
+				return 0d;
+			}
+		}
+	}
+	public double drawCircle(Vector2d pos, Vector2d p, double radius, double width, double dumpingInner, double dumpingOuter) {
+		double d = Vector2d.getDistance(p,pos);
+		if (d < radius) {
+			d = radius - d;
+			if (d < width) {
+				return 1;
+			} else if (d < width + dumpingInner) {
+				return (dumpingInner - (d - width)) / dumpingInner;
+			} else {
+				return 0;
+			}
+		} else {
+			d = d - radius;
+			if (d < width) {
+				return 1;
+			} else if (d < width + dumpingOuter) {
+				return (dumpingOuter - (d - width)) / dumpingOuter;
+			} else {
+				return 0;
+			}
+		}
+	}
+}
+final DrawUtil drawUtil = new DrawUtil();
+
+// 以下test
+//{
+//	Vector2d vec = new Vector2d();
+//	Vector2d center = new Vector2d(0.5,0.5);
+//	Color4d base = new Color4d();
+//	posToVector2d(vec, x, y, w, h);
+//	
+//	double width = 0.01;
+//	double dumping = 0.01;
+//	//Vector2d p1 = new Vector2d(0.1,0.1);
+//	//Vector2d p2 = new Vector2d(0.9,0.9);
+//	Vector2d p1 = new Vector2d(0.1,0.5);
+//	Vector2d p2 = new Vector2d(0.9,0.5);
+//	
+//	baseImage.getColor4d(c,x,y);
+//	//c.a = drawUtil.drawLine(vec,p1,p2,width,dumping);
+//	//c.a = drawUtil.drawFixedWave(vec,p1,p2,width,dumping, 3, 0.1, 1);
+//	//c.a = drawUtil.drawFreeWave(vec,p1,p2,width,dumping, 0, 0.1, 2);
+//
+//	c.a = drawUtil.drawCircle(vec, new Vector2d(0.25,0.75), 0.2, 0.01, 0.02, 0.05);
+////	c.a = drawUtil.fillCircle(vec, new Vector2d(0.75,0.75), 0.2, 0.05);
+//}
+%>

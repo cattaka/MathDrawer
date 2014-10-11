@@ -1,0 +1,25 @@
+<%@page name="波1" %>
+<%@page description="縦と横に波を起こします。" %>
+<%@include file="include/waveUtil.ps"%>
+<%@param name="WaveType" type="Integer" var="waveType" default="0" %>
+<%@param name="NumX" type="Double" var="numX" default="4.00" %>
+<%@param name="NumY" type="Double" var="numY" default="4.00" %>
+<%@param name="OffsetX" type="Double" var="offsetX" default="0.25" %>
+<%@param name="OffsetY" type="Double" var="offsetY" default="0.25" %>
+<%@param name="WaveX" type="Double" var="waveX" default="0.1" %>
+<%@param name="WaveY" type="Double" var="waveY" default="0.1" %>
+<%
+Vector2d vec = new Vector2d();
+posToVector2d(vec, x, y, w, h);
+
+double ox = vec.x + waveY * waveUtil.calcWave(waveType,(offsetY + vec.y) * Math.PI * 2 * numX);
+double oy = vec.y + waveX * waveUtil.calcWave(waveType,(offsetX + vec.x) * Math.PI * 2 * numY);
+
+ox = cyclicDouble(ox);
+oy = cyclicDouble(oy);
+
+baseImage.getColor4dLiner(c,ox,oy);
+
+
+
+%>

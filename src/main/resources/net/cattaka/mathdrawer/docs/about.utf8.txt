@@ -1,0 +1,5 @@
+Copyright 2009 Takao Sumitomo. All rights reserved.
+
+    MathDrawer
+        ${release_number} - build ${build_number} -
+    URL http://www.cattaka.net/

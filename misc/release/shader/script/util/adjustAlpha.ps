@@ -1,0 +1,9 @@
+<%@page name="アルファ調整" %>
+<%@page description="アルファチャンネルを上限値と下限値に合わせて線形補間します。" %>
+<%@param name="minAlpha" type="Double" var="minAlpha" default="0.0" %>
+<%@param name="maxAlpha" type="Double" var="maxAlpha" default="1.0" %>
+<%
+baseImage.getColor4d(c,x,y);
+c.a = limitDouble(minAlpha + (maxAlpha - minAlpha) * c.a);
+
+%>

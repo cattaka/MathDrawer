@@ -1,0 +1,29 @@
+<%@page name="色1" %>
+<%@page description="中心から回転する方向に色相を変化させます。" %>
+<%@param name="Cycle" type="Integer" var="cycle" default="1" %>
+<%@param name="Hue" type="Double" var="hue" default="0.0" %>
+<%@param name="Start Saturation" type="Double" var="startSaturation" default="0.0" %>
+<%@param name="Start Brightness" type="Double" var="startBrightness" default="1.0" %>
+<%@param name="End Saturation" type="Double" var="endSaturation" default="1.0" %>
+<%@param name="End Brightness" type="Double" var="endBrightness" default="1.0" %>
+<%
+Vector2d vec = new Vector2d();
+Vector2d center = new Vector2d(0.5,0.5);
+Color4d base = new Color4d();
+posToVector2d(vec, x, y, w, h);
+
+vec.x -= 0.5;
+vec.y -= 0.5;
+Vector2d pol = new Vector2d();
+toPolar(pol, vec);
+double a = 1.0 - limitDouble(pol.x * 2);
+
+Color4d hsv = new Color4d();
+hsv.a = 1;
+hsv.b = cyclicDouble((pol.y * cycle) / (2d*Math.PI) + hue);
+hsv.c = a * startSaturation + (1.0 - a)*endSaturation;
+hsv.d = a * startBrightness + (1.0 - a)*endBrightness;
+
+hsv.hsvToRgb(c);
+
+%>

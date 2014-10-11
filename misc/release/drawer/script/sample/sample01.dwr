@@ -1,0 +1,15 @@
+<%@page description="放射状に線を描画します。"%>
+<%@param type="Integer" var="n" name="n" default="32"%>
+<%@param type="Integer" var="l" name="l" default="127"%>
+<%@param type="Color4d" var="color" name="color" default="(1,0,0,0)"%>
+<%
+
+g.drawImage(baseImage, 0, 0, null);
+g.setColor(color.toColor());
+for (int i=0;i<n;i++) {
+	double rad = 2*Math.PI * (double)i / (double)n;
+	int x = (int)Math.round((double)l * Math.cos(rad));
+	int y = (int)Math.round((double)l * Math.sin(rad));
+	g.drawLine(l,l,l+x,l+y);
+}
+%>
